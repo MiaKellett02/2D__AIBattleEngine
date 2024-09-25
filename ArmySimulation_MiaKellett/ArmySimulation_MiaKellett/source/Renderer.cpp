@@ -101,7 +101,7 @@ void Renderer::CreateTexture(std::string a_textureID, std::string a_filepath)
 {
 	//Check if the texture already exists in the map.
 	if (m_textureMap.count(a_textureID) > 0) {
-		std::cout << a_textureID << " has already been initialised." << std::endl;
+		//std::cout << a_textureID << " has already been initialised." << std::endl;
 		return; //Early out as we don't need to recreate the texture.
 	}
 

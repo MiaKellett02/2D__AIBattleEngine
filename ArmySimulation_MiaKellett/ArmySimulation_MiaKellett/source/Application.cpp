@@ -284,8 +284,9 @@ void Application::DestroyAllEntities()
 	}
 }
 
-bool Application::IsPositionOutOfBound(const Vector2& a_pos)
+bool Application::IsPositionOutOfBound(Vector2& a_pos)
 {
+	//std::cout << "x: " << a_pos.GetX() << " y: " << a_pos.GetY() << std::endl;
 	return a_pos.x < 0
 		|| a_pos.x > Application::SCREEN_WIDTH
 		|| a_pos.y < 0

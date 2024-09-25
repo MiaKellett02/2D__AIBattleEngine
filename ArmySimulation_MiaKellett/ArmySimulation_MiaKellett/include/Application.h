@@ -36,7 +36,7 @@ public:
 	Entity* GetBlueBase() { return m_blueBaseHealth->GetOwnerEntity(); }
 
 	//Utility.
-	bool IsPositionOutOfBound(const Vector2& a_pos);
+	bool IsPositionOutOfBound(Vector2& a_pos);
 
 	//Consts.
 	const int SCREEN_WIDTH = 1600;

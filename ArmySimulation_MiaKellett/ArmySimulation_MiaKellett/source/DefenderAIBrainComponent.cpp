@@ -14,19 +14,17 @@ void DefenderAIBrainComponent::Update(double a_deltaTime)
 	//HANDLE MOVEMENT
 	//===============
 	//Figure out how much we should be moving by.
-	Vector2 totalMovement;
-	totalMovement = (totalMovement + HandleDodgingAlliesMovement()) * m_seperationSpeed;
+	Vector2 totalMovement = HandleDodgingAlliesMovement() * m_seperationSpeed * 1000;
 
 	//Figure out movement.
 	Vector2 moveDir = m_defencePoint - m_ownerEntity->GetPosition();
-	if (moveDir.SqrMagnitude() < ((m_ownerEntity->GetSize().x / 2) * (m_ownerEntity->GetSize().x / 2))) {
+	if (moveDir.SqrMagnitude() < ((m_ownerEntity->GetSize().x * 2) * (m_ownerEntity->GetSize().x * 2))) {
 		moveDir = Vector2(0, 0);
 	}
-	moveDir = moveDir * m_moveSpeed;
 	totalMovement = totalMovement + moveDir;
 
 	//If the movement would put the entity out of bounds, move them in the opposite direction.
-	Vector2 boundsTest = m_ownerEntity->GetPosition() + totalMovement;
+	Vector2 boundsTest = m_ownerEntity->GetPosition() + (totalMovement * (float)a_deltaTime);
 	if (Application::Instance().IsPositionOutOfBound(boundsTest)) {
 		//Out of bounds so weight movement to center.
 		Vector2 center = Vector2(Application::Instance().SCREEN_WIDTH / 2, Application::Instance().SCREEN_HEIGHT / 2);
@@ -34,8 +32,10 @@ void DefenderAIBrainComponent::Update(double a_deltaTime)
 		totalMovement = totalMovement + moveDir;
 	}
 
-
+	//Calculate velocity.
 	m_velocity = m_velocity + totalMovement;
+
+	//Apply the velocity.
 	m_velocity.Normalize();
 	m_velocity = m_velocity * m_moveSpeed;
 	m_ownerEntity->ChangePosition(m_velocity * (float)a_deltaTime);
@@ -85,7 +85,7 @@ Vector2 DefenderAIBrainComponent::HandleDodgingAlliesMovement()
 		float distanceSqr = (ally->GetPosition() - m_ownerEntity->GetPosition()).SqrMagnitude();
 
 		//Dodge allies that are less than the width away from the center of the entity
-		if (distanceSqr < (m_ownerEntity->GetSize().x * m_ownerEntity->GetSize().x) / 2) {
+		if (distanceSqr < (m_ownerEntity->GetSize().x * m_ownerEntity->GetSize().x * 50000000)) {
 			//Add this current ally to the total.
 			alliesInRangeAveragePosition = alliesInRangeAveragePosition + ally->GetPosition();
 
@@ -104,6 +104,7 @@ Vector2 DefenderAIBrainComponent::HandleDodgingAlliesMovement()
 	dirToAllies.Normalize();
 
 	//Final movement
+	return Vector2(0, 0);
 	return (Vector2(0, 0) - dirToAllies) * m_seperationSpeed;
 }
 

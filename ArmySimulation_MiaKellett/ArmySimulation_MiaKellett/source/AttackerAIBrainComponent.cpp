@@ -12,14 +12,14 @@ void AttackerAIBrainComponent::Update(double a_deltaTime)
 	//===============
 	//Figure out how much we should be moving by.
 	Vector2 totalMovement;
-	totalMovement = (totalMovement + HandleDodgingAlliesMovement()) * m_seperationSpeed;
+	totalMovement = (totalMovement + HandleDodgingAlliesMovement());
 
 	//Move Towards enemies.
 	Entity* closestEnemy = GetClosestEnemy();
 	totalMovement = totalMovement + MoveTowardsClosestEnemy(closestEnemy);;
 
 	//If the movement would put the entity out of bounds, move them in the opposite direction.
-	Vector2 boundsTest = m_ownerEntity->GetPosition() + totalMovement;
+	Vector2 boundsTest = m_ownerEntity->GetPosition() + (totalMovement * (float)a_deltaTime);
 	if (Application::Instance().IsPositionOutOfBound(boundsTest)) {
 		//Out of bounds so weight movement to center.
 		Vector2 center = Vector2(Application::Instance().SCREEN_WIDTH / 2, Application::Instance().SCREEN_HEIGHT / 2);
@@ -76,7 +76,7 @@ Vector2 AttackerAIBrainComponent::HandleDodgingAlliesMovement()
 		float distanceSqr = (ally->GetPosition() - m_ownerEntity->GetPosition()).SqrMagnitude();
 
 		//Dodge allies that are less than the width away from the center of the entity
-		if (distanceSqr < (m_ownerEntity->GetSize().x * m_ownerEntity->GetSize().x) / 2) {
+		if (distanceSqr < (m_ownerEntity->GetSize().x * m_ownerEntity->GetSize().x * 20)) {
 			//Add this current ally to the total.
 			alliesInRangeAveragePosition = alliesInRangeAveragePosition + ally->GetPosition();
 
